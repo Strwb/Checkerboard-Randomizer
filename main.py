@@ -2,12 +2,16 @@ import tkinter as tk
 import random
 import tkinter.messagebox
 
+squares_showed = False
+max_scroll_v = 0
+
 def show_squares(event):
     """    Prints squares and manages window size """
-
+    global squares_showed
+    global max_scroll_v
     row_position = 0
     col_position = 0
-    
+   
     try:
         row_limit = int(y_variable.get())
         col_limit = int(x_variable.get())
@@ -47,6 +51,9 @@ def show_squares(event):
         canvas_height = row_limit * 74 + 30
     else:
         canvas_height = 770
+    
+    squares_showed = True
+    max_scroll_v = row_limit * 74 + 30
 
 
 
@@ -57,21 +64,18 @@ def show_squares(event):
 def on_frame_configure(canvas):
     top_canvas.configure(scrollregion = top_canvas.bbox("all"))
 
-# def mouse_wheel(event):
-#     top_canvas.yview_scroll(int(-1) * (event.delta/120), "units")
+def roll_wheel(event):
 
-# def roll_wheel(event):
-#     if event.num == 4:
-#         top_canvas.yview = ("scroll", -1, "units")
-#     elif event.num == 5:
-#             top_canvas.xview('scroll', 1, 'units')
+    if squares_showed == True and max_scroll_v >= top_canvas.winfo_height():
+        top_canvas.yview_scroll(-1 * (event.delta // 120), "units")
+    else:
+        return None
 
-# ^^ No idea how to make them work too
 
 root = tk.Tk()
 root.title("Program dla Werci")
 root.bind("<Return>", show_squares)
-# root.bind_all("<MouseWheel>", roll_wheel) # No idea how to make it work
+root.bind_all("<MouseWheel>", roll_wheel)
 
 icon_white = tk.PhotoImage(file = "Magnus_W_icon.png") # imports white image
 icon_black = tk.PhotoImage(file = "Magnus_B_icon.png") # imorts black image
